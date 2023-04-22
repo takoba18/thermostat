@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add New User</title>
+</head>
+<body>
+<h1>Add New User</h1>
+<form id="new-user-form">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username"><br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password"><br>
+    <label for="active">Is Enabled?:</label>
+    <input type="checkbox" id="active" name="active"><br>
+    <label for="role">Select a role:</label>
+    <select id="role" name="role">
+        <option value="ADMIN">Admin</option>
+        <option value="USER">User</option>
+    </select>
+    <button type="submit">Submit</button>
+</form>
+<script>
+    const form = document.querySelector('#new-user-form');
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const data = {
+            username: form.elements.username.value,
+            password: form.elements.password.value,
+            enabled: form.elements.active.checked,
+            roles: form.elements.role.value
+        };
+        fetch('http://localhost:8080/api/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error =>console.error(error));
+        window.location.href = "/dashboard"
+    });
+</script>
+</body>
+</html>

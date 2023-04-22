@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Thermostat Management</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <style>
+        .row.content {
+            height: 550px
+        }
+
+        .sidenav {
+            background-color: #f1f1f1;
+            height: 100%;
+        }
+
+        @media screen and (max-width: 767px) {
+            .row.content {
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row content">
+        <div class="col-sm-3 sidenav hidden-xs">
+            <h2>Menu</h2>
+            <ul class="nav nav-pills nav-stacked">
+                <li class="active"><a href="http://localhost:8080/dashboard">Dashboard</a></li>
+                <li><a href="http://localhost:8080/dashboard/new">Add Device</a></li>
+                <li><a href="http://localhost:8080/dashboard/user">Add User</a></li>
+            </ul>
+            <br>
+        </div>
+        <br>
+
+        <div class="card mb-3">
+            <div class="card-header">
+                <i class="fa fa-table"></i>Device Information
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Temperature</th>
+                            <th>Critical</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="device : ${devices}" th:data-device-id="${device.id}">
+                            <td th:text="${device.name}"></td>
+                            <td th:text="${device.temperature}"></td>
+                            <td th:text="${device.critical}"></td>
+                            <td>
+                                <button class="btn btn-primary edit-device-btn">Edit</button>
+                                <button class="btn btn-success save-device-btn" style="display: none;">Save</button>
+                                <button type="button" class="btn btn-danger"
+                                        th:onclick="'deleteDevice(' + ${device.id} + ')'">Delete
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<script>
+    function deleteDevice(deviceId) {
+        if (confirm("Are you sure you want to delete this device?")) {
+            fetch(`http://localhost:8080/api/devices/delete/${deviceId}`, {method: 'DELETE'})
+                .then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        throw new Error('Failed to delete device');
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert('Failed to delete device');
+                });
+        }
+    }
+
+    $(function () {
+        $('.edit-device-btn').click(function () {
+            var $row = $(this).closest('tr');
+            var $name = $row.find('td:nth-child(1)');
+            var $temperature = $row.find('td:nth-child(2)');
+            var $actions = $row.find('td:nth-child(4)');
+
+            $('.edit-device-btn').prop('disabled', true);
+
+            $name.html('<input type="text" value="' + $name.text() + '">');
+            $temperature.html('<input type="text" value="' + $temperature.text() + '">');
+            $actions.find('.edit-device-btn').hide();
+            $actions.find('.save-device-btn').show();
+        });
+
+        $('.save-device-btn').click(function () {
+            var $row = $(this).closest('tr');
+            var $name = $row.find('td:nth-child(1) input');
+            var $temperature = $row.find('td:nth-child(2) input');
+            var deviceId = $row.attr('data-device-id');
+            $.ajax({
+                url: 'http://localhost:8080/api/devices/update/' + deviceId,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    name: $name.val(),
+                    temperature: $temperature.val(),
+                }),
+                success: function (response) {
+                    location.reload()
+                },
+                error: function (response) {
+                    console.error(response);
+                    alert('Failed to update device');
+                    location.reload();
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add New Device</title>
+</head>
+<body>
+<h1>Add New Device</h1>
+<form id="new-device-form">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name"><br>
+    <label for="temperature">Temperature:</label>
+    <input type="number" id="temperature" name="temperature"><br>
+    <button type="submit">Submit</button>
+</form>
+
+<script>
+    const form = document.querySelector('#new-device-form');
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const data = {
+            name: form.elements.name.value,
+            temperature: form.elements.temperature.value
+        };
+        fetch('http://localhost:8080/api/devices/new', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error =>console.error(error));
+        window.location.href = "/dashboard"
+
+    });
+</script>
+</body>
+</html>
