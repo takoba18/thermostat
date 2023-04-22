@@ -10,7 +10,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -34,7 +33,7 @@ public class UserServiceImpl implements UserService {
     public UserResponse addUser(UserRequest req) {
         User user = new User();
         String username = req.getUsername();
-        if (userRepo.findByUsername(username) == null) {
+        if (!userRepo.existsByUsername(username)) {
             String encryptedPwd = passwordEncoder.encode(req.getPassword());
             user.setUsername(req.getUsername());
             user.setPassword(encryptedPwd);

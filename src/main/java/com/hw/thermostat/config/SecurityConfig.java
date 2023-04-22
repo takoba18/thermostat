@@ -27,9 +27,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/users/**", "/signup").permitAll()
+                .requestMatchers( "api/devices/all", "/dashboard/**").permitAll()
                 .and()
-                .authorizeHttpRequests().requestMatchers("/devices/**")
+                .authorizeHttpRequests().requestMatchers("api/devices/add/**", "api/devices/delete/**", "api/devices/new/**", "api/devices/update/**", "api/signup/**")
                 .authenticated().and().formLogin().and()
                 .build();
     }

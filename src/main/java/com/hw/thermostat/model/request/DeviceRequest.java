@@ -1,5 +1,6 @@
 package com.hw.thermostat.model.request;
 
+
 public class DeviceRequest {
 
     private String name;

@@ -5,15 +5,14 @@ import com.hw.thermostat.model.request.DeviceRequest;
 import com.hw.thermostat.model.response.DeviceResponse;
 import com.hw.thermostat.service.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/devices")
+@RequestMapping("/api/devices")
 public class DeviceController {
 
     @Autowired
@@ -21,27 +20,21 @@ public class DeviceController {
 
 
     @PostMapping("/new")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public DeviceResponse addNewDevice(@RequestBody DeviceRequest req) {
         return service.addDevice(req);
     }
 
     @PutMapping("/update/{id}")
-    public DeviceResponse addNewDevice(@PathVariable int id, @RequestBody DeviceRequest req) {
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public DeviceResponse updateDevice(@PathVariable int id, @RequestBody DeviceRequest req) {
         return service.updateDevice(id, req);
     }
 
-    @GetMapping("/all")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public List<Device> getAllTheDevices() {
+    @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Device> getAllDevices() {
         return service.getAllDevices();
     }
-
-    @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public Optional<Device> getProductById(@PathVariable int id) {
-        return service.getDeviceById(id);
-    }
-
 
     @DeleteMapping("delete/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")

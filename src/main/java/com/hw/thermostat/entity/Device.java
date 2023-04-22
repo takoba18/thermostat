@@ -7,7 +7,7 @@ import lombok.*;
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "device")
+@Table(name = "device", uniqueConstraints = @UniqueConstraint(columnNames = "id"))
 @ToString
 @Entity
 public class Device {

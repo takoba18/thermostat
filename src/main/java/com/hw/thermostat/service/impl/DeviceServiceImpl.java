@@ -25,21 +25,14 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     @Override
-    public Optional<Device> getDeviceById(int deviceId) {
-        return deviceRepo.findDeviceById(deviceId);
-    }
-
-    @Override
     public DeviceResponse addDevice(DeviceRequest req) {
 
         Device device = new Device();
         String name = req.getName();
-        if (deviceRepo.findByName(name) == null) {
+        if (!deviceRepo.existsByName(name)) {
             device.setName(name);
             device.setTemperature(req.getTemperature());
-            if (req.getTemperature() > THRESHOLD) {
-                device.setCritical(true);
-            } else device.setCritical(false);
+            device.setCritical(req.getTemperature() > THRESHOLD);
             deviceRepo.save(device);
         }
         return new DeviceResponse(device);
@@ -53,6 +46,7 @@ public class DeviceServiceImpl implements DeviceService {
             device.setName(req.getName());
         if (req.getTemperature() != 0)
             device.setTemperature(req.getTemperature());
+        device.setCritical(device.getTemperature() > THRESHOLD);
         return new DeviceResponse(deviceRepo.save(device));
 
 

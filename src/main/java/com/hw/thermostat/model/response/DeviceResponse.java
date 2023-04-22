@@ -8,7 +8,7 @@ public class DeviceResponse extends DeviceRequest {
 
 
     public DeviceResponse(Device device) {
-        super(device.getName(), device.getTemperature(), device.isCritical());
+        super(device.getName(), device.getTemperature(), device.isCritical());//, device.isCritical());
         id = device.getId();
     }
 

@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Table(name = "_user")
+@Table(name = "_user", uniqueConstraints = @UniqueConstraint(columnNames = "id"))
 @Entity
 
 public class User {
