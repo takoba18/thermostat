@@ -14,7 +14,7 @@
     <name>thermostat</name>
     <description>Smart Thermostat management system that allows users to manage their thermostats</description>
     <properties>
-        <java.version>17</java.version>
+        <java.version>11</java.version>
 
         <spring-security.version>6.0.3</spring-security.version>
 
