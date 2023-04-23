@@ -43,7 +43,6 @@ public class ViewController {
     }
 
     @GetMapping("/user")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ModelAndView addUser() {
         return new ModelAndView("register");
     }
